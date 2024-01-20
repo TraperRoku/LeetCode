@@ -18,7 +18,7 @@ class Solution {
     return helper(root,root.val,0);
     }
     private int helper(TreeNode root, int maxVal,int licznik){
-        if(root == null) return 0;
+        if(root == null) return licznik;
 
         if(root.val>= maxVal){
             licznik++;
