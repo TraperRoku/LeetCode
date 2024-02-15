@@ -1,58 +1,56 @@
 import java.util.*;
 
 class Twitter {
-Map<Integer, List<int[]>> userToTweets;
-Map<Integer, Set> userToFollowers;
+Map<Integer, List<int[]>> userTweets;
+Map<Integer, Set> userFollows;
 int time;
     public Twitter() {
-        userToTweets = new HashMap<>();
-        userToFollowers = new HashMap<>();
-        time = 0;
+    userFollows = new HashMap<>();
+    userTweets = new HashMap<>();
+    time = 0;
+
     }
 
     public void postTweet(int userId, int tweetId) {
-        final int[] tweet = new int[] {tweetId, time};
-        userToTweets.putIfAbsent(userId, new ArrayList<>());
-        userToTweets.get(userId).add(tweet);
+         final int[] tweet = new int[] {tweetId, time};
+         userTweets.putIfAbsent(userId, new ArrayList<>());
+        userTweets.get(userId).add(tweet);
         time++;
     }
 
+
     public List<Integer> getNewsFeed(int userId) {
-     
-        final Set<Integer> followers = userToFollowers.getOrDefault(userId, new HashSet<>());
-   
-        followers.add(userId);
+    final Set<Integer> followers = userFollows.getOrDefault(userId,new HashSet<>());
+    followers.add(userId);
 
-
-        final Queue<int[]> pq = new PriorityQueue<>((a, b) -> a[1] - b[1]);
-        for (final int user: followers) {
-            final List<int[]> allTweets = userToTweets.getOrDefault(user, new ArrayList<>());
-  
-            for (final int[] t: allTweets) {
-                pq.add(t);
-                if (pq.size() > 10) {
-                    pq.remove();
-                }
-            }
+   final Queue<int []> queue = new PriorityQueue<>((a,b)->a[1] - b[1]);
+    for(final int user : followers){
+        final List<int[]> allTweets = userTweets.getOrDefault(user,new ArrayList<>());
+        for(final int[] tweet: allTweets){
+            queue.add(tweet);
+        
+        if(queue.size() > 10){
+            queue.remove();
         }
+}
+    }
+    List<Integer> result = new ArrayList<>();
+    while (!queue.isEmpty()){
+        result.add(0,queue.remove()[0]);
+    }
+    return result;
 
-        final List<Integer> result = new ArrayList<>();
-        while (!pq.isEmpty()) {
-            result.add(0, pq.remove()[0]);
-        }
-
-        return result;
     }
 
     public void follow(int followerId, int followeeId) {
-        userToFollowers.putIfAbsent(followerId, new HashSet<>());
-        userToFollowers.get(followerId).add(followeeId);
+    userFollows.putIfAbsent(followerId,new HashSet<>());
+    userFollows.get(followerId).add(followeeId);
     }
 
     public void unfollow(int followerId, int followeeId) {
-        if (userToFollowers.containsKey(followerId) && userToFollowers.get(followerId).contains(followeeId)) {
-            userToFollowers.get(followerId).remove(followeeId);
-        }
+    if(userFollows.containsKey(followerId) && userFollows.get(followerId).contains(followeeId)){
+        userFollows.get(followerId).remove(followeeId);
+    }
     }
 }
 
