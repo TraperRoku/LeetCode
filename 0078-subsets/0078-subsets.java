@@ -4,14 +4,12 @@ import java.util.List;
 class Solution {
     List<List<Integer>> res;
     public List<List<Integer>> subsets(int[] nums) {
-        res = new ArrayList<>();
-        if(res == null) return null;
-        dfs(nums, new ArrayList<>(),0);
-
-        return res;
+    res = new ArrayList<>();
+    dfs(nums,new ArrayList<>(),0);
+    return res;
     }
-    private void dfs(int[] nums, ArrayList<Integer> temp,int index){
-        if(index >= nums.length){
+    private void dfs(int[] nums, List<Integer> temp, int index){
+        if(nums.length<=index){
             res.add(new ArrayList<>(temp));
             return;
         }
